@@ -113,7 +113,7 @@ const LoginForm = () => {
                   />
                 </div>
               ) : (
-                nul
+                null
               )}
               <AppButton onClick={handleVerification}>Verify</AppButton>
             </>
