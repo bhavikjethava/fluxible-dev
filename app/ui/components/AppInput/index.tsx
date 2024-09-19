@@ -4,23 +4,36 @@ import { FC } from "react";
 export const AppInput: FC<InputField> = ({
   type,
   id,
+  name,
+  label,
   className,
+  placeholder,
   onChange,
   error,
+  disabled,
   value,
   ...rest
 }) => {
   return (
     <>
+      {label ? (
+        <label htmlFor={id} className="form-label text-default">
+          {label}
+        </label>
+      ) : null}
       <input
         type={type}
+        name={name}
+        className={`form-control form-control-lg w-full !rounded-md ${
+          type === "checkbox" ? "form-check-input" : ""
+        } ${className}`}
         id={id}
-        className={`w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:border-indigo-500 text-gray-800 ${className}`}
+        disabled={disabled}
+        placeholder={placeholder}
         onChange={onChange}
         value={value}
-        {...rest}
       />
-      {error ? <span className="text-sm text-red-500">{error}</span> : null}
+      {error ? <span className="text-xs text-red-500">{error}</span> : null}
     </>
   );
 };

@@ -1,4 +1,11 @@
-import { confirmSignIn, confirmSignUp, signIn, signOut, signUp } from "aws-amplify/auth";
+import {
+  confirmSignIn,
+  confirmSignUp,
+  setUpTOTP,
+  signIn,
+  signOut,
+  signUp,
+} from "aws-amplify/auth";
 import { Callback, FormData } from "./types";
 
 export const handleSignup = async (formData: FormData, callback?: Callback) => {
@@ -11,6 +18,10 @@ export const handleSignup = async (formData: FormData, callback?: Callback) => {
         userAttributes: {
           email: formData.email || "",
           name: formData.name || "",
+          secret_hash: process.env.NEXT_PUBLIC_COGNITO_APP_CLIENT_SECRET,
+        },
+        clientMetadata: {
+          secret_hash: process.env.NEXT_PUBLIC_COGNITO_APP_CLIENT_SECRET || '',
         },
         autoSignIn: true,
       },
@@ -49,28 +60,34 @@ export const handleSignIn = async (formData: FormData, callback: Callback) => {
     callback?.({ isError: true, error });
     console.log("signup error ", error);
   }
-}
+};
 
-export const handleConfirmSignIn = async (formData: FormData, callback: Callback) => {
+export const handleConfirmSignIn = async (
+  formData: FormData,
+  callback: Callback
+) => {
   try {
     const response = await confirmSignIn({
-      challengeResponse: formData?.verificationCode || ''
+      challengeResponse: formData?.verificationCode || "",
     });
     callback?.(response);
   } catch (error) {
     callback?.({ isError: true, error });
     console.log("signup error ", error);
   }
-}
+};
 
 export const handleSigOut = async (callback: Callback) => {
   try {
-    const response = await signOut();
+    const response = await signOut({
+      global: false,
+      oauth: {
+        redirectUrl: 'https://localhost:3000/auth/login'
+      }
+    });
     callback?.(response);
   } catch (error) {
     callback?.({ isError: true, error });
     console.log("signup error ", error);
   }
-}
-
-
+};
